@@ -27,6 +27,27 @@
         <div class="icon">⚙️</div>
         <h2>Compte</h2>
       </router-link>
+
+      <router-link to="/reports" class="menu-item">
+        <div class="icon">📊</div>
+        <h2>Rapports</h2>
+      </router-link>
+
+      <router-link to="/objectifs" class="menu-item">
+        <div class="icon">🎯</div>
+        <h2>Objectifs Financiers</h2>
+      </router-link>
+
+      <router-link to="/notifications" class="notification-icon" title="Notifications">
+        🔔
+        <span v-if="notificationCount > 0" class="notification-badge">{{ notificationCount }}</span>
+      </router-link>
+
+      <router-link to="/revenus" class="menu-item">
+        <div class="icon">💵</div>
+        <h2>Revenus</h2>
+      </router-link>
+
     </div>
   </div>
 </template>
@@ -77,4 +98,31 @@ export default {
   font-size: 36px;
   margin-bottom: 10px;
 }
+
+.notification-icon {
+  position: relative;
+  font-size: 24px;
+  text-decoration: none;
+  cursor: pointer;
+  color: #333;
+  transition: transform 0.2s ease;
+}
+
+.notification-icon:hover {
+  transform: scale(1.2);
+  color: #007bff;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
 </style>

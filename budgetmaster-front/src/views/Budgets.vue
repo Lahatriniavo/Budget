@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import BudgetList from '../views/BudgetList.vue';
-import BudgetForm from '../views/BudgetForm.vue';
+import BudgetList from '../components/BudgetList.vue';
+import BudgetForm from '../components/BudgetForm.vue';
 import AppHeader from '../components/AppHeader.vue';
 import api from '../services/api';
 

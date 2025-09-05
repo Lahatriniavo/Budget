@@ -3,6 +3,13 @@ import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import Budgets from '../views/Budgets.vue';
 import Home from '../views/Home.vue';
+import Reports from '../views/Reports.vue';
+import Forecasts from '../views/Forecasts.vue';
+import Transactions from '../views/Transactions.vue';
+import Profile from '../views/Profile.vue'; 
+import FinancialGoals from '../views/FinancialGoals.vue';
+import Notifications from '../views/Notifications.vue';
+import Revenues from '../views/Revenues.vue';
 
 const routes = [
   { path: '/', redirect: '/home' }, // ← redirection par défaut
@@ -14,6 +21,11 @@ const routes = [
   { path: '/forecasts', component: () => import('../views/Forecasts.vue') },
   { path: '/profile', component: () => import('../views/Profile.vue') },
   { path: '/account', component: () => import('../views/Account.vue') },
+  { path: '/user-profile', component: () => import('../components/userProfile.vue') },
+  { path: '/reports', component: Reports },
+  { path: '/objectifs', name: 'Objectifs', component: FinancialGoals },
+  { path: '/notifications', name: 'Notifications', component: Notifications },
+  { path: '/revenus', name: 'Revenus', component: Revenues },
 ];
 
 const router = createRouter({

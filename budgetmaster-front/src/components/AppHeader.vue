@@ -1,7 +1,13 @@
 <template>
   <header class="app-header">
     <h1 class="title">BudgetMaster</h1>
-    <button @click="logoutUser" class="logout-button">Déconnexion</button>
+        <div class="header-actions">
+      <router-link to="/notifications" class="notification-icon" title="Notifications">
+        🔔
+      </router-link>
+
+      <button @click="logoutUser" class="logout-button">Déconnexion</button>
+    </div>
   </header>
 </template>
 
@@ -10,6 +16,12 @@ import { logout } from '../services/authService'
 
 export default {
   name: 'AppHeader',
+    props: {
+    notificationCount: {
+      type: Number,
+      default: 0,
+    },
+  },
   methods: {
     async logoutUser() {
       if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
@@ -55,4 +67,24 @@ export default {
 .logout-button:hover {
   background-color: #c0392b;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.notification-icon {
+  font-size: 24px;
+  text-decoration: none;
+  cursor: pointer;
+  color: #333;
+  transition: transform 0.2s ease;
+}
+
+.notification-icon:hover {
+  transform: scale(1.2);
+  color: #007bff;
+}
+
 </style>
