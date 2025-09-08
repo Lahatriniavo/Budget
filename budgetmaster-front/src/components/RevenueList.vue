@@ -1,30 +1,68 @@
 <template>
-  <div>
-    <h2 style="font-size: 20px; margin-bottom: 1rem;">Mes revenus</h2>
+  <div class="transaction-list container p-4 bg-white rounded shadow-sm">
+    <h2 class="title mb-4">📋 Mes Transactions</h2>
 
     <!-- Filtres -->
-    <div style="margin-bottom: 1rem;">
-      <label>
-        Mois :
-        <input type="month" v-model="selectedMonth" />
-      </label>
-      <label style="margin-left: 1rem;">
-        Source :
-        <input type="text" v-model="filterSource" placeholder="Ex: Salaire" />
-      </label>
+    <div class="filters d-flex flex-wrap gap-3 mb-4 align-items-center">
+      <div>
+        <label for="filterMonth" class="form-label fw-semibold me-2">Mois :</label>
+        <input id="filterMonth" type="month" v-model="selectedMonth" class="form-control" />
+      </div>
+      <div>
+        <label for="filterCategory" class="form-label fw-semibold me-2">Catégorie :</label>
+        <select id="filterCategory" v-model="selectedCategory" class="form-select">
+          <option value="">Toutes</option>
+          <option>Alimentation</option>
+          <option>Logement</option>
+          <option>Transport</option>
+          <option>Divertissement</option>
+          <option>Autres</option>
+        </select>
+      </div>
     </div>
 
-    <!-- Total -->
-    <p style="font-weight: bold;">Total : {{ filteredTotal }} Ar</p>
+    <!-- Solde -->
+    <div class="summary d-flex justify-content-around bg-light p-3 rounded mb-4 text-center">
+      <p class="text-success mb-0"><strong>Revenus :</strong> +{{ totalRevenus.toLocaleString('fr-FR') }} Ar</p>
+      <p class="text-danger mb-0"><strong>Dépenses :</strong> -{{ totalDepenses.toLocaleString('fr-FR') }} Ar</p>
+      <p class="mb-0"><strong>Solde :</strong> {{ solde.toLocaleString('fr-FR') }} Ar</p>
+    </div>
 
-    <ul>
-      <li v-for="rev in filteredRevenues" :key="rev.id" style="margin-bottom: 15px;">
-        <strong>{{ rev.source }}</strong> — {{ rev.amount }} Ar
-        <br />
-        <small>📅 {{ formatDate(rev.date) }}</small>
-        <br />
-        <button @click="$emit('editRevenue', rev)" style="margin-right: 5px;">Modifier</button>
-        <button @click="$emit('deleteRevenue', rev.id)" style="color: red;">Supprimer</button>
+    <!-- Liste -->
+    <ul class="transaction-items list-unstyled">
+      <li
+        v-for="tx in filteredTransactions"
+        :key="tx.id"
+        class="transaction-item d-flex justify-content-between align-items-center p-3 mb-3 rounded shadow-sm"
+        :class="{'bg-success bg-opacity-10': tx.type === 'revenu', 'bg-danger bg-opacity-10': tx.type === 'dépense'}"
+      >
+        <div class="details flex-grow-1">
+          <strong class="d-block mb-1">{{ tx.description }}</strong>
+          <span class="amount fw-bold">{{ tx.amount.toLocaleString('fr-FR') }} Ar</span>
+          <small class="text-muted d-block mt-1">
+            📅 {{ formatDate(tx.date) }} — 📂 {{ tx.category }} — 🔖 {{ tx.type }}
+          </small>
+        </div>
+
+        <div class="actions d-flex gap-2 ms-3">
+          <button
+            @click="$emit('editTransaction', tx)"
+            class="btn btn-sm btn-warning"
+            aria-label="Modifier transaction"
+          >
+            Modifier
+          </button>
+          <button
+            @click="$emit('deleteTransaction', tx.id)"
+            class="btn btn-sm btn-danger"
+            aria-label="Supprimer transaction"
+          >
+            Supprimer
+          </button>
+        </div>
+      </li>
+      <li v-if="filteredTransactions.length === 0" class="text-center text-muted fst-italic">
+        Aucune transaction trouvée.
       </li>
     </ul>
   </div>
@@ -33,36 +71,89 @@
 <script>
 export default {
   props: {
-    revenues: Array,
+    transactions: Array,
   },
   data() {
     return {
       selectedMonth: '',
-      filterSource: '',
+      selectedCategory: '',
     };
   },
   computed: {
-    filteredRevenues() {
-      return this.revenues.filter((r) => {
-        const matchesMonth = this.selectedMonth
-          ? r.date.startsWith(this.selectedMonth)
+    filteredTransactions() {
+      return this.transactions.filter((tx) => {
+        const matchMonth = this.selectedMonth
+          ? tx.date.startsWith(this.selectedMonth)
           : true;
-
-        const matchesSource = this.filterSource
-          ? r.source.toLowerCase().includes(this.filterSource.toLowerCase())
+        const matchCategory = this.selectedCategory
+          ? tx.category === this.selectedCategory
           : true;
-
-        return matchesMonth && matchesSource;
+        return matchMonth && matchCategory;
       });
     },
-    filteredTotal() {
-      return this.filteredRevenues.reduce((sum, r) => sum + r.amount, 0).toLocaleString('fr-FR');
+    totalRevenus() {
+      return this.filteredTransactions
+        .filter((tx) => tx.type === 'revenu')
+        .reduce((sum, tx) => sum + Number(tx.amount), 0);
+    },
+    totalDepenses() {
+      return this.filteredTransactions
+        .filter((tx) => tx.type === 'dépense')
+        .reduce((sum, tx) => sum + Number(tx.amount), 0);
+    },
+    solde() {
+      return this.totalRevenus - this.totalDepenses;
     },
   },
   methods: {
-    formatDate(date) {
-      return new Date(date).toLocaleDateString();
+    formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('fr-FR');
     },
   },
 };
 </script>
+
+<style scoped>
+.transaction-list {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #343a40;
+}
+
+.filters label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.summary p {
+  font-size: 1.1rem;
+}
+
+.transaction-item {
+  border: 1px solid #ddd;
+  transition: box-shadow 0.3s ease;
+}
+
+.transaction-item:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+}
+
+.details .amount {
+  color: #212529;
+}
+
+.actions button {
+  min-width: 80px;
+  transition: background-color 0.3s ease;
+}
+
+.actions button:hover {
+  filter: brightness(0.9);
+}
+</style>

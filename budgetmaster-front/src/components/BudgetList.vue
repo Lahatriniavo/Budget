@@ -1,17 +1,28 @@
 <template>
-  <div class="budget-list">
-    <h1 class="title">💰 Mes budgets</h1>
+  <div class="container py-4 budget-list">
+    <h2 class="mb-4">💰 Mes budgets</h2>
 
     <!-- Filtres -->
-    <div class="filters">
-      <label>
-        Mois :
-        <input type="month" v-model="selectedMonth" />
-      </label>
+    <div class="row mb-4 g-3 align-items-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <label for="filterMonth" class="form-label fw-semibold">Mois :</label>
+        <input
+          id="filterMonth"
+          type="month"
+          v-model="selectedMonth"
+          class="form-control"
+          aria-label="Filtrer par mois"
+        />
+      </div>
 
-      <label>
-        Catégorie :
-        <select v-model="selectedCategory">
+      <div class="col-12 col-md-6 col-lg-4">
+        <label for="filterCategory" class="form-label fw-semibold">Catégorie :</label>
+        <select
+          id="filterCategory"
+          v-model="selectedCategory"
+          class="form-select"
+          aria-label="Filtrer par catégorie"
+        >
           <option value="">Toutes</option>
           <option>Logement</option>
           <option>Transport</option>
@@ -19,28 +30,53 @@
           <option>Divertissement</option>
           <option>Autres</option>
         </select>
-      </label>
+      </div>
+
+      <div class="col-12 col-lg-4 d-flex align-items-center justify-content-lg-end mt-3 mt-lg-0">
+        <p class="mb-0 fw-bold fs-5 text-success">
+          Total : {{ formattedTotal }}
+        </p>
+      </div>
     </div>
 
-    <!-- Total -->
-    <p class="total">Total : {{ formattedTotal }}</p>
-
     <!-- Liste filtrée -->
-    <ul class="budget-items">
+    <ul class="list-group shadow-sm">
       <li
         v-for="budget in filteredBudgets"
         :key="budget.id"
-        class="budget-item"
+        class="list-group-item d-flex justify-content-between align-items-center flex-wrap"
       >
-        <div class="budget-info">
-          <strong>{{ budget.name }}</strong> — {{ budget.amount.toLocaleString('fr-FR') }} Ar
+        <div>
+          <strong>{{ budget.name }}</strong> — 
+          <span>{{ budget.amount.toLocaleString('fr-FR') }} Ar</span>
           <br />
-          <small>📅 {{ formatDate(budget.date) }} — 📂 {{ budget.category }}</small>
+          <small class="text-muted">
+            📅 {{ formatDate(budget.date) }} — 📂 {{ budget.category }}
+          </small>
         </div>
-        <div class="budget-actions">
-          <button @click="$emit('editBudget', budget)" class="edit-btn">Modifier</button>
-          <button @click="$emit('deleteBudget', budget.id)" class="delete-btn">Supprimer</button>
+
+        <div class="btn-group mt-2 mt-md-0" role="group" aria-label="Actions budget">
+          <button
+            @click="$emit('editBudget', budget)"
+            type="button"
+            class="btn btn-sm btn-warning"
+            aria-label="Modifier budget"
+          >
+            Modifier
+          </button>
+          <button
+            @click="$emit('deleteBudget', budget.id)"
+            type="button"
+            class="btn btn-sm btn-danger"
+            aria-label="Supprimer budget"
+          >
+            Supprimer
+          </button>
         </div>
+      </li>
+
+      <li v-if="filteredBudgets.length === 0" class="list-group-item text-center text-muted fst-italic">
+        Aucun budget trouvé.
       </li>
     </ul>
   </div>
@@ -92,81 +128,11 @@ export default {
 
 <style scoped>
 .budget-list {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 1.5rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
-.title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-}
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.2rem;
-  align-items: center;
-}
-
-.filters label {
-  font-size: 0.9rem;
-  color: #333;
-}
-
-.total {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #2d6a4f;
-  margin-bottom: 1rem;
-}
-
-.budget-items {
-  list-style: none;
-  padding: 0;
-}
-
-.budget-item {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: #f9f9f9;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.budget-info {
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.budget-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.edit-btn,
-.delete-btn {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.edit-btn {
-  background-color: #f0ad4e;
-  color: white;
-}
-
-.delete-btn {
-  background-color: #d9534f;
-  color: white;
+.list-group-item {
+  border-radius: 0.375rem;
 }
 </style>

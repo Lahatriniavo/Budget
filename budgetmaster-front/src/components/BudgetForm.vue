@@ -1,39 +1,90 @@
 <template>
-  <div style="margin: 1rem 0;">
-    <form @submit.prevent="submitBudget">
-      <input
-        v-model="form.name"
-        placeholder="Nom du budget"
-        required
-        style="margin-right: 10px;"
-      />
-      <input
-        v-model.number="form.amount"
-        type="number"
-        min="0"
-        placeholder="Montant"
-        required
-        style="margin-right: 10px; width: 80px;"
-      />
-      <input
-        v-model="form.date"
-        type="date"
-        required
-        style="margin-right: 10px;"
-      />
-      <select v-model="form.category" required style="margin-right: 10px;">
-        <option disabled value="">Catégorie</option>
-        <option>Logement</option>
-        <option>Transport</option>
-        <option>Alimentation</option>
-        <option>Divertissement</option>
-        <option>Autres</option>
-      </select>
-      <button type="submit">{{ form.id ? 'Modifier' : 'Ajouter' }}</button>
-      <button v-if="form.id" type="button" @click="resetForm" style="margin-left: 10px;">Annuler</button>
+  <div class="container py-4" style="max-width: 600px;">
+    <form @submit.prevent="submitBudget" class="needs-validation" novalidate>
+      
+      <div class="mb-3 row align-items-center">
+        <label for="budgetName" class="col-4 col-form-label text-end">Nom</label>
+        <div class="col-8">
+          <input
+            id="budgetName"
+            v-model="form.name"
+            type="text"
+            class="form-control"
+            placeholder="Nom du budget"
+            required
+          />
+          <div class="invalid-feedback">Veuillez saisir un nom.</div>
+        </div>
+      </div>
+
+      <div class="mb-3 row align-items-center">
+        <label for="budgetAmount" class="col-4 col-form-label text-end">Montant</label>
+        <div class="col-8">
+          <input
+            id="budgetAmount"
+            v-model.number="form.amount"
+            type="number"
+            min="0"
+            class="form-control"
+            placeholder="Montant"
+            required
+          />
+          <div class="invalid-feedback">Veuillez saisir un montant valide.</div>
+        </div>
+      </div>
+
+      <div class="mb-3 row align-items-center">
+        <label for="budgetDate" class="col-4 col-form-label text-end">Date</label>
+        <div class="col-8">
+          <input
+            id="budgetDate"
+            v-model="form.date"
+            type="date"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Veuillez sélectionner une date.</div>
+        </div>
+      </div>
+
+      <div class="mb-4 row align-items-center">
+        <label for="budgetCategory" class="col-4 col-form-label text-end">Catégorie</label>
+        <div class="col-8">
+          <select
+            id="budgetCategory"
+            v-model="form.category"
+            class="form-select"
+            required
+          >
+            <option value="" disabled>Catégorie</option>
+            <option>Logement</option>
+            <option>Transport</option>
+            <option>Alimentation</option>
+            <option>Divertissement</option>
+            <option>Autres</option>
+          </select>
+          <div class="invalid-feedback">Veuillez sélectionner une catégorie.</div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="submit" class="btn btn-primary">
+          {{ form.id ? 'Modifier' : 'Ajouter' }}
+        </button>
+        <button
+          v-if="form.id"
+          type="button"
+          @click="resetForm"
+          class="btn btn-secondary"
+        >
+          Annuler
+        </button>
+      </div>
     </form>
   </div>
 </template>
+
+
 
 <script>
 import api from '../services/api';
@@ -58,6 +109,8 @@ export default {
       handler(newBudget) {
         if (newBudget) {
           this.form = { ...newBudget };
+        } else {
+          this.resetForm();
         }
       },
       immediate: true,
@@ -65,6 +118,12 @@ export default {
   },
   methods: {
     async submitBudget() {
+      // Validation HTML5 bootstrap style
+      const formEl = this.$el.querySelector('form');
+      if (!formEl.checkValidity()) {
+        formEl.classList.add('was-validated');
+        return;
+      }
       try {
         const { id, name, amount, date, category } = this.form;
 
@@ -83,6 +142,11 @@ export default {
     resetForm() {
       this.form = { id: null, name: '', amount: 0, date: '', category: '' };
       this.$emit('resetEdit');
+      // Reset validation styling
+      this.$nextTick(() => {
+        const formEl = this.$el.querySelector('form');
+        formEl.classList.remove('was-validated');
+      });
     },
   },
 };

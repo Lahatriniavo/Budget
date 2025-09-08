@@ -1,14 +1,32 @@
 <template>
-  <header class="app-header">
-    <h1 class="title">BudgetMaster</h1>
-        <div class="header-actions">
-      <router-link to="/notifications" class="notification-icon" title="Notifications">
-        🔔
-      </router-link>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <!-- Logo / Titre -->
+      <h1 class="navbar-brand mb-0 fw-bold fs-4 text-primary">BudgetMaster</h1>
 
-      <button @click="logoutUser" class="logout-button">Déconnexion</button>
+      <!-- Actions à droite -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Notifications -->
+        <router-link to="/notifications" class="position-relative text-dark fs-4" title="Notifications" aria-label="Notifications">
+          🔔
+          <span v-if="notificationCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ notificationCount }}
+            <span class="visually-hidden">notifications non lues</span>
+          </span>
+        </router-link>
+
+        <!-- Import/Export -->
+        <router-link to="/import-export" class="text-dark fs-4" title="Import/Export" aria-label="Import/Export">
+          📁
+        </router-link>
+
+        <!-- Déconnexion -->
+        <button @click="logoutUser" class="btn btn-danger btn-sm" title="Déconnexion">
+          Déconnexion
+        </button>
+      </div>
     </div>
-  </header>
+  </nav>
 </template>
 
 <script>
@@ -16,7 +34,7 @@ import { logout } from '../services/authService'
 
 export default {
   name: 'AppHeader',
-    props: {
+  props: {
     notificationCount: {
       type: Number,
       default: 0,
@@ -39,52 +57,9 @@ export default {
 </script>
 
 <style scoped>
-.app-header {
-  background-color: #fff;
-  padding: 20px 30px;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Supplément pour éviter débordement du badge */
+.badge {
+  font-size: 0.65rem;
+  padding: 0.35em 0.5em;
 }
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-}
-
-.logout-button {
-  padding: 8px 14px;
-  font-size: 14px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.logout-button:hover {
-  background-color: #c0392b;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.notification-icon {
-  font-size: 24px;
-  text-decoration: none;
-  cursor: pointer;
-  color: #333;
-  transition: transform 0.2s ease;
-}
-
-.notification-icon:hover {
-  transform: scale(1.2);
-  color: #007bff;
-}
-
 </style>

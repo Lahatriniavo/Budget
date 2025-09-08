@@ -1,33 +1,51 @@
 <template>
   <div>
     <AppHeader />
-    
-    <div style="margin: 1rem;">
-      <label>
-        Filtrer par mois : 
-        <input type="month" v-model="selectedMonth" />
-      </label>
 
-      <label style="margin-left: 1rem;">
-        Filtrer par catégorie :
-        <select v-model="selectedCategories" multiple size="5" style="margin-left: 0.5rem; min-width: 150px;">
-          <option value="">Toutes</option>
-          <option>Logement</option>
-          <option>Transport</option>
-          <option>Alimentation</option>
-          <option>Divertissement</option>
-          <option>Autres</option>
-        </select>
-      </label>
+    <div class="container my-4">
+      <div class="card p-4 shadow-sm">
+        <h2 class="mb-4 fw-bold fs-4 text-center">📈 Rapports Financiers</h2>
 
-      <button @click="resetFilters" style="margin-left: 1rem;padding: 0.5rem 1rem;cursor:pointer" title="Réinitialiser les filtres">Réinitialiser filtres</button>
+        <div class="row g-3 align-items-end mb-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Filtrer par mois :</label>
+            <input type="month" v-model="selectedMonth" class="form-control" />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Filtrer par catégorie :</label>
+            <select
+              v-model="selectedCategories"
+              multiple
+              class="form-select"
+              size="5"
+            >
+              <option value="">Toutes</option>
+              <option>Logement</option>
+              <option>Transport</option>
+              <option>Alimentation</option>
+              <option>Divertissement</option>
+              <option>Autres</option>
+            </select>
+          </div>
+
+          <div class="col-md-2 d-flex align-items-end">
+            <button @click="resetFilters" class="btn btn-secondary w-100">
+              Réinitialiser
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphiques -->
+      <div class="mt-5">
+        <ReportChart
+          :transactions="filteredTransactions"
+          :budgets="filteredBudgets"
+          :selectedCategory="selectedCategories"
+        />
+      </div>
     </div>
-
-    <ReportChart 
-      :transactions="filteredTransactions" 
-      :budgets="filteredBudgets" 
-      :selectedCategory="selectedCategory"
-    />
   </div>
 </template>
 
@@ -46,26 +64,30 @@ export default {
       selectedCategories: [],
     };
   },
-computed: {
-  filteredTransactions() {
-    return this.transactions.filter(t => {
-      const matchesMonth = this.selectedMonth ? t.date.startsWith(this.selectedMonth) : true;
-      const matchesCategory = this.selectedCategories.length
-        ? this.selectedCategories.includes(t.category)
-        : true;
-      return matchesMonth && matchesCategory;
-    });
+  computed: {
+    filteredTransactions() {
+      return this.transactions.filter((t) => {
+        const matchesMonth = this.selectedMonth
+          ? t.date.startsWith(this.selectedMonth)
+          : true;
+        const matchesCategory = this.selectedCategories.length
+          ? this.selectedCategories.includes(t.category)
+          : true;
+        return matchesMonth && matchesCategory;
+      });
+    },
+    filteredBudgets() {
+      return this.budgets.filter((b) => {
+        const matchesMonth = this.selectedMonth
+          ? b.date.startsWith(this.selectedMonth)
+          : true;
+        const matchesCategory = this.selectedCategories.length
+          ? this.selectedCategories.includes(b.category)
+          : true;
+        return matchesMonth && matchesCategory;
+      });
+    },
   },
-  filteredBudgets() {
-    return this.budgets.filter(b => {
-      const matchesMonth = this.selectedMonth ? b.date.startsWith(this.selectedMonth) : true;
-      const matchesCategory = this.selectedCategories.length
-        ? this.selectedCategories.includes(b.category)
-        : true;
-      return matchesMonth && matchesCategory;
-    });
-  },
-},
   async created() {
     await this.fetchData();
   },

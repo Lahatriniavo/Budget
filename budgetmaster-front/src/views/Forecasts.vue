@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1 style="margin-bottom: 1rem;">Prévisions Budgétaires</h1>
+  <div class="container my-4">
+    <h1 class="mb-4 text-center">📅 Prévisions Budgétaires</h1>
 
     <ForecastForm
       :forecastToEdit="forecastToEdit"

@@ -1,16 +1,29 @@
 <template>
   <div>
     <AppHeader />
-    <FinancialGoalForm
-      :goalToEdit="goalToEdit"
-      @goalAdded="fetchGoals"
-      @resetEdit="goalToEdit = null"
-    />
-    <FinancialGoalList
-      :goals="goals"
-      @editGoal="goalToEdit = $event"
-      @deleteGoal="deleteGoal"
-    />
+
+    <div class="container my-4">
+      <h1 class="fw-bold mb-4 text-center">🎯 Mes Objectifs Financiers</h1>
+
+      <!-- Formulaire -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <FinancialGoalForm
+            :goalToEdit="goalToEdit"
+            @goalAdded="fetchGoals"
+            @resetEdit="goalToEdit = null"
+          />
+        </div>
+      </div>
+
+      <!-- Liste -->
+      <FinancialGoalList
+        :goals="goals"
+        @editGoal="goalToEdit = $event"
+        @deleteGoal="deleteGoal"
+        @updateGoalAmount="updateGoalAmount"
+      />
+    </div>
   </div>
 </template>
 
@@ -45,6 +58,14 @@ export default {
         } catch (err) {
           console.error("Erreur lors de la suppression :", err);
         }
+      }
+    },
+    async updateGoalAmount(id, newAmount) {
+      try {
+        await api.patch(`/financial-goals/${id}`, { saved_amount: newAmount });
+        this.fetchGoals();
+      } catch (err) {
+        console.error("Erreur lors de la mise à jour :", err);
       }
     },
   },

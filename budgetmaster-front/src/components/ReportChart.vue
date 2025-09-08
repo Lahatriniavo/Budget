@@ -1,16 +1,37 @@
 <template>
-  <div>
-    <h2>Rapports graphiques</h2>
+  <div class="container report-chart mt-5">
+    <h2 class="text-center mb-5 fw-bold">📊 Rapports Graphiques</h2>
 
-    <div style="max-width: 600px; margin: auto;">
-      <h3>Dépenses par catégorie</h3>
-      <PieChart :chartData="pieDataTransactions" />
+    <div class="row g-4 justify-content-center">
+      <!-- Dépenses par catégorie -->
+      <div class="col-lg-6 col-md-10">
+        <div class="card shadow-sm p-3 h-100">
+          <h5 class="text-center mb-3">Dépenses par catégorie</h5>
+          <div style="height: 300px;">
+            <PieChart :chartData="pieDataTransactions" />
+          </div>
+        </div>
+      </div>
 
-      <h3 style="margin-top: 2rem;">Budgets par catégorie</h3>
-      <PieChart :chartData="pieDataBudgets" />
+      <!-- Budgets par catégorie -->
+      <div class="col-lg-6 col-md-10">
+        <div class="card shadow-sm p-3 h-100">
+          <h5 class="text-center mb-3">Budgets par catégorie</h5>
+          <div style="height: 300px;">
+            <PieChart :chartData="pieDataBudgets" />
+          </div>
+        </div>
+      </div>
 
-      <h3 style="margin-top: 2rem;">Revenus vs Dépenses vs Budget prévu</h3>
-      <BarChart :chartData="barData" />
+      <!-- Bar chart -->
+      <div class="col-12">
+        <div class="card shadow-sm p-3 mt-4">
+          <h5 class="text-center mb-3">Revenus vs Dépenses vs Budget</h5>
+          <div style="height: 400px;">
+            <BarChart :chartData="barData" />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -28,7 +49,15 @@ import {
   BarElement,
 } from 'chart.js';
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, BarElement);
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement
+);
 
 export default {
   components: {
@@ -36,26 +65,38 @@ export default {
       extends: Pie,
       props: ['chartData'],
       mounted() {
-        this.renderChart(this.chartData, { responsive: true, maintainAspectRatio: false });
+        this.renderChart(this.chartData, {
+          responsive: true,
+          maintainAspectRatio: false,
+        });
       },
       watch: {
         chartData() {
-          this.renderChart(this.chartData, { responsive: true, maintainAspectRatio: false });
-        }
-      }
+          this.renderChart(this.chartData, {
+            responsive: true,
+            maintainAspectRatio: false,
+          });
+        },
+      },
     },
     BarChart: {
       extends: Bar,
       props: ['chartData'],
       mounted() {
-        this.renderChart(this.chartData, { responsive: true, maintainAspectRatio: false });
+        this.renderChart(this.chartData, {
+          responsive: true,
+          maintainAspectRatio: false,
+        });
       },
       watch: {
         chartData() {
-          this.renderChart(this.chartData, { responsive: true, maintainAspectRatio: false });
-        }
-      }
-    }
+          this.renderChart(this.chartData, {
+            responsive: true,
+            maintainAspectRatio: false,
+          });
+        },
+      },
+    },
   },
   props: {
     transactions: Array,
@@ -64,8 +105,8 @@ export default {
   computed: {
     pieDataTransactions() {
       const categories = {};
-      this.transactions.forEach(t => {
-        if (t.amount < 0) { // dépenses
+      this.transactions.forEach((t) => {
+        if (t.amount < 0) {
           const cat = t.category || 'Autres';
           categories[cat] = (categories[cat] || 0) + Math.abs(t.amount);
         }
@@ -75,16 +116,16 @@ export default {
         labels: Object.keys(categories),
         datasets: [
           {
-            label: 'Dépenses par catégorie',
-            backgroundColor: ['#f87979', '#a8dadc', '#457b9d', '#e76f51', '#2a9d8f'],
+            label: 'Dépenses',
+            backgroundColor: ['#e76f51', '#f4a261', '#2a9d8f', '#264653', '#a8dadc'],
             data: Object.values(categories),
-          }
+          },
         ],
       };
     },
     pieDataBudgets() {
       const categories = {};
-      this.budgets.forEach(b => {
+      this.budgets.forEach((b) => {
         const cat = b.category || 'Autres';
         categories[cat] = (categories[cat] || 0) + b.amount;
       });
@@ -93,10 +134,10 @@ export default {
         labels: Object.keys(categories),
         datasets: [
           {
-            label: 'Budgets par catégorie',
-            backgroundColor: ['#f4a261', '#e9c46a', '#264653', '#2a9d8f', '#e76f51'],
+            label: 'Budgets',
+            backgroundColor: ['#fcbf49', '#f77f00', '#003049', '#eae2b7', '#d62828'],
             data: Object.values(categories),
-          }
+          },
         ],
       };
     },
@@ -105,12 +146,12 @@ export default {
       let depenses = 0;
       let budgetTotal = 0;
 
-      this.transactions.forEach(t => {
+      this.transactions.forEach((t) => {
         if (t.amount >= 0) revenus += t.amount;
         else depenses += Math.abs(t.amount);
       });
 
-      this.budgets.forEach(b => {
+      this.budgets.forEach((b) => {
         budgetTotal += b.amount;
       });
 
@@ -121,17 +162,17 @@ export default {
             label: 'Montant',
             backgroundColor: ['#2a9d8f', '#e76f51', '#f4a261'],
             data: [revenus, depenses, budgetTotal],
-          }
+          },
         ],
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-h2 {
+.report-chart h5 {
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 2rem;
 }
 </style>

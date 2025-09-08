@@ -1,36 +1,85 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../views/Login.vue';
-import Register from '../views/Register.vue';
-import Budgets from '../views/Budgets.vue';
-import Home from '../views/Home.vue';
-import Reports from '../views/Reports.vue';
-import Forecasts from '../views/Forecasts.vue';
-import Transactions from '../views/Transactions.vue';
-import Profile from '../views/Profile.vue'; 
-import FinancialGoals from '../views/FinancialGoals.vue';
-import Notifications from '../views/Notifications.vue';
-import Revenues from '../views/Revenues.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+
+import Home from '../views/Home.vue' // ← Le layout principal (avec sidebar)
+import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
 
 const routes = [
-  { path: '/', redirect: '/home' }, // ← redirection par défaut
-  { path: '/home', component: Home },
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
-  { path: '/budgets', component: Budgets },
-  { path: '/transactions', component: () => import('../views/Transactions.vue') },
-  { path: '/forecasts', component: () => import('../views/Forecasts.vue') },
-  { path: '/profile', component: () => import('../views/Profile.vue') },
-  { path: '/account', component: () => import('../views/Account.vue') },
-  { path: '/user-profile', component: () => import('../components/userProfile.vue') },
-  { path: '/reports', component: Reports },
-  { path: '/objectifs', name: 'Objectifs', component: FinancialGoals },
-  { path: '/notifications', name: 'Notifications', component: Notifications },
-  { path: '/revenus', name: 'Revenus', component: Revenues },
-];
+  {
+    path: '/',
+    redirect: '/budgets' // Redirection vers la page principale
+  },
+
+  // Routes sans layout (authentification)
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/register',
+    component: Register
+  },
+
+  // Routes avec layout Home.vue (sidebar)
+  {
+    path: '/',
+    component: Home,
+    children: [
+      {
+        path: 'budgets',
+        component: () => import('../views/Budgets.vue')
+      },
+      {
+        path: 'transactions',
+        component: () => import('../views/Transactions.vue')
+      },
+      {
+        path: 'forecasts',
+        component: () => import('../views/Forecasts.vue')
+      },
+      {
+        path: 'profile',
+        component: () => import('../views/Profile.vue')
+      },
+      {
+        path: 'account',
+        component: () => import('../views/Settings.vue')
+      },
+      {
+        path: 'user-profile',
+        component: () => import('../components/userProfile.vue')
+      },
+      {
+        path: 'reports',
+        component: () => import('../views/Reports.vue')
+      },
+      {
+        path: 'objectifs',
+        name: 'Objectifs',
+        component: () => import('../views/FinancialGoals.vue')
+      },
+      {
+        path: 'notifications',
+        name: 'Notifications',
+        component: () => import('../views/Notifications.vue')
+      },
+      {
+        path: 'revenus',
+        name: 'Revenus',
+        component: () => import('../views/Revenues.vue')
+      },
+      {
+        path: 'import-export',
+        name: 'ImportExport',
+        component: () => import('../components/DataImportExport.vue')
+      }
+    ]
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
+  routes
+})
 
-export default router;
+export default router

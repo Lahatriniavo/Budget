@@ -1,15 +1,26 @@
 <template>
-  <div class="form-container">
-    <form @submit.prevent="submitTransaction">
-      <input v-model="form.description" placeholder="Description" required />
-      <input v-model.number="form.amount" type="number" placeholder="Montant" required />
-      <select v-model="form.type" required>
-        <option value="">Type</option>
+  <div class="form-container p-3 mb-4 bg-light rounded shadow-sm">
+    <form @submit.prevent="submitTransaction" class="d-flex flex-wrap gap-3 align-items-center">
+      <input
+        v-model="form.description"
+        placeholder="Description"
+        required
+        class="form-control flex-grow-1 min-w-200"
+      />
+      <input
+        v-model.number="form.amount"
+        type="number"
+        placeholder="Montant"
+        required
+        class="form-control flex-grow-1 min-w-120"
+      />
+      <select v-model="form.type" required class="form-select flex-grow-1 min-w-140">
+        <option disabled value="">Type</option>
         <option value="revenu">Revenu</option>
         <option value="dépense">Dépense</option>
       </select>
-      <input v-model="form.date" type="date" required />
-      <select v-model="form.category" required>
+      <input v-model="form.date" type="date" required class="form-control min-w-150" />
+      <select v-model="form.category" required class="form-select flex-grow-1 min-w-140">
         <option disabled value="">Catégorie</option>
         <option>Alimentation</option>
         <option>Logement</option>
@@ -17,8 +28,17 @@
         <option>Divertissement</option>
         <option>Autres</option>
       </select>
-      <button type="submit">{{ form.id ? 'Modifier' : 'Ajouter' }}</button>
-      <button v-if="form.id" @click="resetForm" type="button">Annuler</button>
+      <button type="submit" class="btn btn-primary px-4">
+        {{ form.id ? 'Modifier' : 'Ajouter' }}
+      </button>
+      <button
+        v-if="form.id"
+        @click="resetForm"
+        type="button"
+        class="btn btn-secondary px-4"
+      >
+        Annuler
+      </button>
     </form>
   </div>
 </template>
@@ -82,18 +102,26 @@ export default {
 
 <style scoped>
 .form-container {
-  margin-bottom: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
+.min-w-120 {
+  min-width: 120px;
 }
-input,
-select,
-button {
-  padding: 5px;
+.min-w-140 {
+  min-width: 140px;
+}
+.min-w-150 {
+  min-width: 150px;
+}
+.min-w-200 {
+  min-width: 200px;
+}
+button.btn {
+  transition: background-color 0.3s ease;
+}
+button.btn:hover {
+  filter: brightness(0.9);
 }
 </style>

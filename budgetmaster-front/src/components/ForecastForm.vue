@@ -1,39 +1,60 @@
 <template>
-  <div style="margin: 1rem 0;">
-    <form @submit.prevent="submitForecast">
-      <input
-        v-model="form.category"
-        placeholder="Catégorie"
-        required
-        style="margin-right: 10px;"
-      />
+  <div class="my-4">
+    <form @submit.prevent="submitForecast" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Catégorie</label>
+        <input
+          v-model="form.category"
+          placeholder="Catégorie"
+          required
+          class="form-control"
+        />
+      </div>
 
-      <input
-        v-model.number="form.amount"
-        type="number"
-        min="0"
-        placeholder="Montant"
-        required
-        style="margin-right: 10px; width: 100px;"
-      />
+      <div class="col-md-2">
+        <label class="form-label fw-semibold">Montant</label>
+        <input
+          v-model.number="form.amount"
+          type="number"
+          min="0"
+          placeholder="Montant"
+          required
+          class="form-control"
+        />
+      </div>
 
-      <input
-        v-model="form.month"
-        type="month"
-        required
-        style="margin-right: 10px;"
-      />
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Mois</label>
+        <input
+          v-model="form.month"
+          type="month"
+          required
+          class="form-control"
+        />
+      </div>
 
-      <select v-model="form.type" required style="margin-right: 10px;">
-        <option disabled value="">Type</option>
-        <option value="revenu">Revenu</option>
-        <option value="dépense">Dépense</option>
-      </select>
+      <div class="col-md-2">
+        <label class="form-label fw-semibold">Type</label>
+        <select v-model="form.type" required class="form-select">
+          <option disabled value="">Type</option>
+          <option value="revenu">Revenu</option>
+          <option value="dépense">Dépense</option>
+        </select>
+      </div>
 
-      <button type="submit">{{ form.id ? 'Modifier' : 'Ajouter' }}</button>
-      <button v-if="form.id" type="button" @click="resetForm" style="margin-left: 10px;">
-        Annuler
-      </button>
+      <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary w-100">
+          {{ form.id ? 'Modifier' : 'Ajouter' }}
+        </button>
+        <button
+          v-if="form.id"
+          type="button"
+          @click="resetForm"
+          class="btn btn-secondary w-100"
+        >
+          Annuler
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -70,13 +91,11 @@ export default {
     async submitForecast() {
       try {
         const { id, category, amount, month, type } = this.form;
-
         if (id) {
           await api.put(`/forecasts/${id}`, { category, amount, month, type });
         } else {
           await api.post('/forecasts', { category, amount, month, type });
         }
-
         this.$emit('forecastSaved');
         this.resetForm();
       } catch (err) {
