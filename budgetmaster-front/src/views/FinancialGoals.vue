@@ -39,6 +39,7 @@ export default {
     return {
       goals: [],
       goalToEdit: null,
+      goalToDelete: null,
     };
   },
   methods: {
@@ -51,14 +52,12 @@ export default {
       }
     },
     async deleteGoal(id) {
-      if (confirm('Voulez-vous vraiment supprimer cet objectif ?')) {
         try {
           await api.delete(`/financial-goals/${id}`);
           this.fetchGoals();
         } catch (err) {
           console.error("Erreur lors de la suppression :", err);
         }
-      }
     },
     async updateGoalAmount(id, newAmount) {
       try {

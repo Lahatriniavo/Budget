@@ -46,7 +46,6 @@ export default {
       }
     },
     async deleteTransaction(id) {
-      if (confirm('Voulez-vous vraiment supprimer cette transaction ?')) {
         try {
           await api.delete(`/transactions/${id}`);
           this.fetchTransactions();
@@ -54,7 +53,6 @@ export default {
           console.error("Erreur lors de la suppression :", error);
         }
       }
-    },
   },
   created() {
     this.fetchTransactions();

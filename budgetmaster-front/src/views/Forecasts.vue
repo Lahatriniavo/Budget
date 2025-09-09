@@ -20,6 +20,7 @@
 import ForecastForm from '../components/ForecastForm.vue';
 import ForecastList from '../components/ForecastList.vue';
 import api from '../services/api';
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 export default {
   components: {
@@ -44,14 +45,12 @@ export default {
     },
 
     async deleteForecast(id) {
-      if (confirm('Voulez-vous vraiment supprimer cette prévision ?')) {
         try {
           await api.delete(`/forecasts/${id}`);
           this.fetchForecasts();
         } catch (error) {
           console.error('Erreur lors de la suppression:', error);
         }
-      }
     },
   },
   created() {

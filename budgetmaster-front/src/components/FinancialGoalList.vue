@@ -40,10 +40,37 @@
               <button class="btn btn-outline-primary btn-sm" @click="$emit('editGoal', goal)">
                 Modifier
               </button>
-              <button class="btn btn-outline-danger btn-sm" @click="$emit('deleteGoal', goal.id)">
+              <button class="btn btn-outline-danger btn-sm" @click="openDeleteModal(goal)">
                 Supprimer
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔔 MODALE DE CONFIRMATION -->
+    <div
+      class="modal fade"
+      ref="deleteModal"
+      tabindex="-1"
+      aria-labelledby="deleteModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            Êtes-vous sûr de vouloir supprimer l'objectif <strong>"{{ goalToDelete?.name }}"</strong> ?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="confirmDelete">
+              Supprimer
+            </button>
           </div>
         </div>
       </div>
@@ -52,9 +79,16 @@
 </template>
 
 <script>
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';  
+
 export default {
   props: {
     goals: Array,
+  },
+  data() {
+    return {
+      goalToDelete: null,
+    };
   },
   methods: {
     formatDate(dateStr) {
@@ -83,6 +117,17 @@ export default {
       } catch (err) {
         console.error("Erreur lors de la mise à jour :", err);
         alert("Une erreur est survenue.");
+      }
+    },
+    openDeleteModal(goal) {
+      this.goalToDelete = goal;
+      const modal = new bootstrap.Modal(this.$refs.deleteModal);
+      modal.show();
+    },
+    confirmDelete() {
+      if (this.goalToDelete) {
+        this.$emit('deleteGoal', this.goalToDelete.id);
+        this.goalToDelete = null;
       }
     },
   },

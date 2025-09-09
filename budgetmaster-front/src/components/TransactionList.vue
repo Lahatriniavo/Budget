@@ -53,7 +53,7 @@
             Modifier
           </button>
           <button
-            @click="$emit('deleteTransaction', tx.id)"
+            @click="openDeleteModal(tx)"
             class="btn btn-sm btn-danger"
             aria-label="Supprimer transaction"
           >
@@ -66,9 +66,42 @@
       </li>
     </ul>
   </div>
+  <!-- Modal de confirmation -->
+<div
+  class="modal fade"
+  id="deleteTransactionModal"
+  tabindex="-1"
+  aria-labelledby="deleteTransactionModalLabel"
+  aria-hidden="true"
+  ref="deleteTransactionModal"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteTransactionModalLabel">Confirmer la suppression</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Fermer"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer la transaction <strong>{{ transactionToDelete?.description }}</strong> ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" @click="confirmDelete">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </template>
 
 <script>
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 export default {
   props: {
     transactions: Array,
@@ -77,6 +110,7 @@ export default {
     return {
       selectedMonth: '',
       selectedCategory: '',
+      transactionToDelete: null,
     };
   },
   computed: {
@@ -108,6 +142,17 @@ export default {
   methods: {
     formatDate(dateStr) {
       return new Date(dateStr).toLocaleDateString('fr-FR');
+    },
+    openDeleteModal(transaction) {
+      this.transactionToDelete = transaction;
+      const modal = new bootstrap.Modal(this.$refs.deleteTransactionModal);
+      modal.show();
+    },
+    confirmDelete() {
+      this.$emit('deleteTransaction', this.transactionToDelete.id);
+      const modal = bootstrap.Modal.getInstance(this.$refs.deleteTransactionModal);
+      modal.hide();
+      this.transactionToDelete = null;
     },
   },
 };

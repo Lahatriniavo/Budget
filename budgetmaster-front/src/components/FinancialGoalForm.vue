@@ -80,10 +80,13 @@ export default {
       try {
         const { id, name, target_amount, deadline, category } = this.form;
 
+        const payload = { name, target_amount, deadline, category, saved_amount: this.form.saved_amount || 0 };
+        console.log(payload);
+
         if (id) {
-          await api.put(`/financial-goals/${id}`, { name, target_amount, deadline, category });
+          await api.put(`/financial-goals/${id}`, { ...payload });
         } else {
-          await api.post('/financial-goals', { name, target_amount, deadline, category });
+          await api.post('/financial-goals', { ...payload, newAmount: 0 });
         }
 
         this.$emit('goalAdded');
