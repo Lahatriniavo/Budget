@@ -7,7 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\ForecastController;
 use App\Http\Controllers\API\ProfileController;
-use APP\Http\Controllers\API\FinancialGoalController;
+use App\Http\Controllers\API\FinancialGoalController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\RevenueController;
 use App\Http\Controllers\DataImportExportController;
@@ -29,6 +29,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('revenues', RevenueController::class);
     Route::post('/import', [DataImportExportController::class, 'import']);
     Route::get('/export', [DataImportExportController::class, 'export']);
+    Route::post('/financial-goals', [FinancialGoalController::class, 'store']);
+    Route::put('/financial-goals/{id}', [FinancialGoalController::class, 'update']);
+    Route::delete('/financial-goals/{id}', [FinancialGoalController::class, 'destroy']);
+    Route::get('/financial-goals', [FinancialGoalController::class, 'index']);
 
     Route::get('/user', function (Request $request) {
         return $request->user();

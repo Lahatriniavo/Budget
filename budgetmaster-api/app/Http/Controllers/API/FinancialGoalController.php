@@ -26,6 +26,7 @@ class FinancialGoalController extends Controller
             'target_amount' => 'required|numeric|min:0',
             'deadline' => 'nullable|date',
             'category' => ['nullable', Rule::in(['Logement', 'Transport', 'Alimentation', 'Divertissement', 'Autres'])],
+            'saved_amount' => 'nullable|numeric|min:0',
         ]);
 
         $goal = FinancialGoal::create([
@@ -34,7 +35,7 @@ class FinancialGoalController extends Controller
             'target_amount' => $request->target_amount,
             'deadline' => $request->deadline,
             'category' => $request->category,
-            'saved_amount' => 0,
+            'saved_amount' => $request->saved_amount ?? 0,
         ]);
 
         return response()->json($goal, 201);
