@@ -4,7 +4,10 @@
     <div class="notifications-container">
       <h1>🔔 Notifications</h1>
 
-      <ul v-if="notifications.length">
+      <div v-if="loading">Chargement des notifications...</div>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+
+      <ul v-if="notifications.length && !loading">
         <li
           v-for="notif in notifications"
           :key="notif.id"
@@ -14,22 +17,22 @@
           <strong>{{ notif.title }}</strong>
           <p>{{ notif.message }}</p>
           <small>{{ formatDate(notif.created_at) }}</small>
-          <br />
+
           <button
             v-if="!notif.is_read"
             @click="markAsRead(notif)"
             :disabled="notif.loading"
+            :aria-label="`Marquer la notification ${notif.title} comme lue`"
           >
             {{ notif.loading ? "..." : "Marquer comme lue" }}
           </button>
         </li>
       </ul>
 
-      <p v-else>Aucune notification pour le moment.</p>
+      <p v-else-if="!loading">Aucune notification pour le moment.</p>
     </div>
   </div>
 </template>
-
 
 <script>
 import AppHeader from '../components/AppHeader.vue';
@@ -40,6 +43,8 @@ export default {
   data() {
     return {
       notifications: [],
+      loading: false,
+      errorMessage: '',
     };
   },
   async created() {
@@ -47,17 +52,22 @@ export default {
   },
   methods: {
     async fetchNotifications() {
+      this.loading = true;
       try {
         const res = await api.get('/notifications');
         this.notifications = res.data.map(n => ({ ...n, loading: false }));
+        this.errorMessage = '';
       } catch (err) {
         console.error('Erreur lors de la récupération :', err);
+        this.errorMessage = 'Impossible de charger les notifications.';
+      } finally {
+        this.loading = false;
       }
     },
     async markAsRead(notification) {
       if (notification.is_read) return;
-      notification.loading = true;
 
+      notification.loading = true;
       try {
         await api.post(`/notifications/${notification.id}/mark-as-read`);
         notification.is_read = true;
@@ -68,12 +78,12 @@ export default {
       }
     },
     formatDate(dateStr) {
+      if (!dateStr) return '';
       return new Date(dateStr).toLocaleString('fr-FR');
     }
   }
 };
 </script>
-
 
 <style scoped>
 .notifications-container {
@@ -102,5 +112,15 @@ export default {
 .notification-item small {
   color: #888;
   font-size: 12px;
+}
+
+.notification-item.read {
+  background-color: #f9f9f9;
+  color: #999;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
 }
 </style>

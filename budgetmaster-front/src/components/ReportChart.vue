@@ -48,7 +48,8 @@ import {
   LinearScale,
   BarElement,
 } from 'chart.js';
-
+import PieChart from './PieChart.vue';
+import BarChart from './Barchart.vue';
 ChartJS.register(
   Title,
   Tooltip,
@@ -61,42 +62,44 @@ ChartJS.register(
 
 export default {
   components: {
-    PieChart: {
-      extends: Pie,
-      props: ['chartData'],
-      mounted() {
-        this.renderChart(this.chartData, {
-          responsive: true,
-          maintainAspectRatio: false,
-        });
-      },
-      watch: {
-        chartData() {
-          this.renderChart(this.chartData, {
-            responsive: true,
-            maintainAspectRatio: false,
-          });
-        },
-      },
-    },
-    BarChart: {
-      extends: Bar,
-      props: ['chartData'],
-      mounted() {
-        this.renderChart(this.chartData, {
-          responsive: true,
-          maintainAspectRatio: false,
-        });
-      },
-      watch: {
-        chartData() {
-          this.renderChart(this.chartData, {
-            responsive: true,
-            maintainAspectRatio: false,
-          });
-        },
-      },
-    },
+    // PieChart: {
+    //   extends: Pie,
+    //   props: ['chartData'],
+    //   mounted() {
+    //     this.renderChart(this.chartData, {
+    //       responsive: true,
+    //       maintainAspectRatio: false,
+    //     });
+    //   },
+    //   watch: {
+    //     chartData() {
+    //       this.renderChart(this.chartData, {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //       });
+    //     },
+    //   },
+    // },
+    // BarChart: {
+    //   extends: Bar,
+    //   props: ['chartData'],
+    //   mounted() {
+    //     this.renderChart(this.chartData, {
+    //       responsive: true,
+    //       maintainAspectRatio: false,
+    //     });
+    //   },
+    //   watch: {
+    //     chartData() {
+    //       this.renderChart(this.chartData, {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //       });
+    //     },
+    //   },
+    // },
+    PieChart,
+    BarChart,
   },
   props: {
     transactions: Array,
