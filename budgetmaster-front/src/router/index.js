@@ -42,7 +42,7 @@ const routes = [
         component: () => import('../views/Profile.vue')
       },
       {
-        path: 'account',
+        path: 'settings',
         component: () => import('../views/Settings.vue')
       },
       {

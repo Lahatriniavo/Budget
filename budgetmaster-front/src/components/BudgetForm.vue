@@ -84,8 +84,6 @@
   </div>
 </template>
 
-
-
 <script>
 import api from '../services/api';
 
@@ -118,7 +116,6 @@ export default {
   },
   methods: {
     async submitBudget() {
-      // Validation HTML5 bootstrap style
       const formEl = this.$el.querySelector('form');
       if (!formEl.checkValidity()) {
         formEl.classList.add('was-validated');
@@ -130,7 +127,7 @@ export default {
         if (id) {
           await api.put(`/budgets/${id}`, { name, amount, date, category });
         } else {
-          await api.post('/budgets', { name, amount, date, category });
+          await api.post('/budgets', { name, amount, date: this.form.date, category });
         }
 
         this.$emit('budgetAdded');
@@ -142,7 +139,6 @@ export default {
     resetForm() {
       this.form = { id: null, name: '', amount: 0, date: '', category: '' };
       this.$emit('resetEdit');
-      // Reset validation styling
       this.$nextTick(() => {
         const formEl = this.$el.querySelector('form');
         formEl.classList.remove('was-validated');

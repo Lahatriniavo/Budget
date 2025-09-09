@@ -54,11 +54,16 @@ export default {
     const saved = localStorage.getItem('userSettings');
     if (saved) this.settings = JSON.parse(saved);
   },
+  watch: {
+    'settings.theme'(newTheme) {
+      localStorage.setItem('userSettings', JSON.stringify(this.settings));
+      this.$emit('themeChanged', newTheme);
+    }
+  },
   methods: {
     saveSettings() {
       localStorage.setItem('userSettings', JSON.stringify(this.settings));
       alert('Paramètres enregistrés !');
-      this.$emit('themeChanged', this.settings.theme);
     }
   }
 };

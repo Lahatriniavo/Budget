@@ -38,14 +38,13 @@ export default {
       }
     },
     async deleteBudget(id) {
-      if (confirm('Voulez-vous vraiment supprimer ce budget ?')) {
         try {
           await api.delete(`/budgets/${id}`);
           this.fetchBudgets();
         } catch (err) {
           console.error("Erreur lors de la suppression :", err);
         }
-      }
+      
     }
   },
   created() {

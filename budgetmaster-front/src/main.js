@@ -1,4 +1,4 @@
-// src/main.js
+// ✅ Correction dans src/main.js
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -7,10 +7,10 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap';
 
-createApp(App)
-  .use(router) // Très important !!
-  .mount('#app');
+// ✅ Créer l'instance de l'application
+const app = createApp(App);
 
+// ✅ Ajouter des propriétés globales (comme $formatCurrency)
 app.config.globalProperties.$formatCurrency = function (amount) {
   const saved = localStorage.getItem('userSettings');
   const currency = saved ? JSON.parse(saved).currency || 'MGA' : 'MGA';
@@ -22,3 +22,5 @@ app.config.globalProperties.$formatCurrency = function (amount) {
   }).format(amount);
 };
 
+// ✅ Utiliser les plugins et monter l'app
+app.use(router).mount('#app');

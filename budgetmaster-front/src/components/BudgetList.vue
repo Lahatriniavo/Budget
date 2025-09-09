@@ -52,6 +52,7 @@
           <br />
           <small class="text-muted">
             📅 {{ formatDate(budget.date) }} — 📂 {{ budget.category }}
+            {{ console.log(budget.date) }}
           </small>
         </div>
 
@@ -65,13 +66,14 @@
             Modifier
           </button>
           <button
-            @click="$emit('deleteBudget', budget.id)"
+            @click="openDeleteModal(budget)"
             type="button"
             class="btn btn-sm btn-danger"
             aria-label="Supprimer budget"
           >
             Supprimer
           </button>
+
         </div>
       </li>
 
@@ -80,9 +82,30 @@
       </li>
     </ul>
   </div>
+  <!-- Modal de confirmation -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" ref="deleteModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer le budget <strong>{{ budgetToDelete?.name }}</strong> ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" @click="confirmDelete">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </template>
 
+
 <script>
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';  
 export default {
   props: {
     budgets: Array,
@@ -91,13 +114,14 @@ export default {
     return {
       selectedMonth: '',
       selectedCategory: '',
+      budgetToDelete: null,
     };
   },
   computed: {
     filteredBudgets() {
       return this.budgets.filter((b) => {
         const matchesMonth = this.selectedMonth
-          ? b.date.startsWith(this.selectedMonth)
+          ? b.date && b.date.startsWith(this.selectedMonth)
           : true;
 
         const matchesCategory = this.selectedCategory
@@ -121,6 +145,17 @@ export default {
   methods: {
     formatDate(dateStr) {
       return new Date(dateStr).toLocaleDateString('fr-FR');
+    },
+    openDeleteModal(budget) {
+      this.budgetToDelete = budget;
+      const modal = new bootstrap.Modal(this.$refs.deleteModal);
+      modal.show();
+    },
+    confirmDelete() {
+      this.$emit('deleteBudget', this.budgetToDelete.id);
+      const modal = bootstrap.Modal.getInstance(this.$refs.deleteModal);
+      modal.hide();
+      this.budgetToDelete = null;
     },
   },
 };
