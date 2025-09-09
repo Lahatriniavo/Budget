@@ -24,8 +24,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('profile', [ProfileController::class, 'show']);
     Route::put('profile', [ProfileController::class, 'update']);
     Route::apiResource('financial-goals', FinancialGoalController::class);
-    Route::get('notifications', [NotificationController::class, 'index']);
-    Route::post('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
     Route::apiResource('revenues', RevenueController::class);
     Route::post('/import', [DataImportExportController::class, 'import']);
     Route::get('/export', [DataImportExportController::class, 'export']);
@@ -33,6 +31,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/financial-goals/{id}', [FinancialGoalController::class, 'update']);
     Route::delete('/financial-goals/{id}', [FinancialGoalController::class, 'destroy']);
     Route::get('/financial-goals', [FinancialGoalController::class, 'index']);
+    Route::post('/notifications', [NotificationController::class, 'store']);
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::put('profile', [ProfileController::class, 'update']);
 
     Route::get('/user', function (Request $request) {
         return $request->user();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Notification;
 
 class NotificationController extends Controller
 {
@@ -24,6 +25,25 @@ class NotificationController extends Controller
         $notif->save();
 
         return response()->json(['message' => 'Notification marquée comme lue.']);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        $notification = Notification::create([
+            'user_id' => $request->user()->id,
+            'title' => $request->title,
+            'type' => $request->type,
+            'message' => $request->message,
+            'is_read' => false,
+        ]);
+
+        return response()->json($notification, 201);
     }
 }
 
