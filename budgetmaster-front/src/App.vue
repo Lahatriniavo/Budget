@@ -1,6 +1,7 @@
 <!-- src/App.vue -->
 <template>
     <router-view />
+    <h1>Hello World</h1>
 </template>
 
 <script>
