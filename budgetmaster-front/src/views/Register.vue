@@ -84,8 +84,12 @@ export default {
         });
         this.$router.push('/login');
       } catch (e) {
+        if (e.response && e.response.data && e.response.data.errors) {
+          console.log("Erreurs de validation :", e.response.data.errors);
+        } else {
+          console.error(e);
+        }
         alert("Erreur à l'inscription");
-        console.error(e);
       }
     },
   },

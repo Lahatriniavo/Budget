@@ -20,7 +20,6 @@
 import ForecastForm from '../components/ForecastForm.vue';
 import ForecastList from '../components/ForecastList.vue';
 import api from '../services/api';
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 export default {
   components: {
